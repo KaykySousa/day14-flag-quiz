@@ -1,91 +1,52 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
+"use client"
 
-const inter = Inter({ subsets: ['latin'] })
+import Button from "@/components/design/Button"
+import DeveloperInfo from "@/components/DeveloperInfo"
+import FlagsSelect from "@/components/FlagsSelect"
+import { useQuiz } from "@/hooks/useQuiz"
+import { FormEvent, useState } from "react"
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+	const { randomCountry, checkAnswer } = useQuiz()
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
+	const [answer, setAnswer] = useState("")
 
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+	function handleSubmit(e: FormEvent) {
+		e.preventDefault()
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
+		checkAnswer(answer)
+		setAnswer("")
+	}
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+	return (
+		<div className="min-h-screen w-full bg-neutral-900 flex justify-center items-center p-6">
+			<div className="flex flex-col items-center max-w-lg w-full">
+				<h1 className="text-3xl text-white font-semibold mb-6">
+					Guess the Flag
+				</h1>
+				<img
+					src={randomCountry?.flag.src}
+					alt={randomCountry?.flag.alt}
+					className="w-full h-auto rounded"
+				/>
+				<form onSubmit={handleSubmit} className="mt-6 w-full flex">
+					<FlagsSelect
+						className="mr-2"
+						value={answer}
+						onChange={(e) => {
+							setAnswer(e.target.value)
+						}}
+					/>
+					<Button type="submit">
+						<img
+							src="/send-icon.svg"
+							alt="Send"
+							className="h-6 w-6"
+						/>
+					</Button>
+				</form>
+				<DeveloperInfo />
+			</div>
+		</div>
+	)
 }
